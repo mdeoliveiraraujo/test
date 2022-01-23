@@ -16,7 +16,7 @@ export class SetrulesComponent implements OnInit {
   ngOnInit(): void {
 
     let loader = new Loader({
-      apiKey: ''
+      apiKey: 'i changed this. '
     });
 
     loader.load().then(() => {
