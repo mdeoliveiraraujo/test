@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,12 +16,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select'
+import { LocationService } from './location.service';
+import { MapBoxComponent } from './setrules/map-box/map-box.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    SetrulesComponent
+    SetrulesComponent,
+    MapBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -32,9 +36,10 @@ import { MatSelectModule } from '@angular/material/select'
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    FormsModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [LocationService],
+  bootstrap: [AppComponent, LocationService]
 })
 export class AppModule { }

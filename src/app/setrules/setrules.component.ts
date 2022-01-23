@@ -1,17 +1,31 @@
 import { Component, OnInit } from '@angular/core';
+
 import { Loader } from '@googlemaps/js-api-loader';
-import { map } from 'rxjs';
+import { Observable } from 'rxjs';
+
+
+import { LocationService } from '../location.service';
+
+import { RequisitionModel } from '../shared/requisition.model';
 
 @Component({
   selector: 'app-setrules',
   templateUrl: './setrules.component.html',
-  styleUrls: ['./setrules.component.css']
+  styleUrls: ['./setrules.component.css'],
+  providers: [LocationService]
 })
 export class SetrulesComponent implements OnInit {
-  public raio: number = 0;
-  constructor() { }
+  submitted = false;
+  terminado = true;
+  playback = new Audio();
 
-  //const mapinha: google.maps.Map;
+  sounds = ['Rooster', 'Nuclear', 'Bip'];
+
+  model = new RequisitionModel(0, { lat: -31.00000, lng: 50.00000 }, "Rooster");
+  //public raio: number = 0;
+  classesObj: Object;
+
+  constructor(private locationService: LocationService) { }
 
   ngOnInit(): void {
 
@@ -20,10 +34,24 @@ export class SetrulesComponent implements OnInit {
     });
 
     loader.load().then(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position: GeolocationPosition) => {
+            //const pos = {
+            this.model.coords.lat = position.coords.latitude;
+            this.model.coords.lng = position.coords.longitude;
+            //console.log(this.model.coords.lat);
+            //};
+            map.setCenter({ lat: this.model.coords.lat, lng: this.model.coords.lng });
+          }
+        );
+      }
+
       const originalMapCenter = new google.maps.LatLng({ lat: -30.014866, lng: -51.143374 });
+      // const originalMapCenter = new google.maps.LatLng(this.pos);
       const map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: -30.014866, lng: -51.143374 },
-        zoom: 15,
+        // center: originalMapCenter,
+        zoom: 13,
         styles: [
           {
             "elementType": "geometry",
@@ -239,7 +267,7 @@ export class SetrulesComponent implements OnInit {
             ]
           }
         ]
-      })
+      });
 
       let mapMarker = new google.maps.Marker({
         position: originalMapCenter,
@@ -251,39 +279,81 @@ export class SetrulesComponent implements OnInit {
         strokeColor: 'red',
         map: map,
         center: originalMapCenter,
-        radius: this.raio*1000,
+        radius: this.model.radius * 1000,
         strokeOpacity: 0.4,
         fillColor: 'red',
         fillOpacity: 0.1
-      })
+      });
+
+      mapMarker.setMap(null);
+      mapCircle.setMap(null);
 
       // Configure the click listener.
       map.addListener("click", (mapsMouseEvent) => {
 
-        console.log(JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2));
-        console.log(this.raio);
-        // Close the current InfoWindow.
         mapMarker.setMap(null);
         mapCircle.setMap(null);
-        mapCircle = new google.maps.Circle({
-          center: mapsMouseEvent.latLng,
-          radius: this.raio*1000,
-          map: map,
-          strokeColor: 'red',
-          strokeOpacity: 0.4,
-          fillColor: 'red',
-          fillOpacity: 0.1
-        });
-        mapMarker = new google.maps.Marker({
-          position: mapsMouseEvent.latLng,
-          map: map,
-          title: 'Your destination'
-        });
+
+        //this.model.coords= mapsMouseEvent.latLng;
+        this.model.coords = mapsMouseEvent.latLng.toJSON();
+        //mapsMouseEvent.latLng.toJSON());
+
+        if (this.model.radius) {
+          mapCircle = new google.maps.Circle({
+            center: this.model.coords,//mapsMouseEvent.latLng,
+            radius: this.model.radius * 1000,
+            map: map,
+            strokeColor: 'red',
+            strokeOpacity: 0.4,
+            fillColor: 'red',
+            fillOpacity: 0.1
+          });
+          mapMarker = new google.maps.Marker({
+            position: this.model.coords,//mapsMouseEvent.latLng,
+            map: map,
+            title: 'Your destination'
+          });
+        }
       });
     });
   }
 
-  getRaio(event: any) {
-    this.raio = event.target.value;
+  getPosition(): Observable<any> {
+    return new Observable(observer => {
+      window.navigator.geolocation.getCurrentPosition(position => {
+        observer.next(position);
+        observer.complete();
+      },
+        error => observer.error(error));
+    });
+  }
+
+  calculateDistance() {
+    var R = 6371; // Radius of the earth in km
+    let lat1 = this.model.coords.lat;
+    let lon1 = this.model.coords.lng;
+    let lat2 = -31;
+    let lon2 = -52;
+    var dLat = (lat2 - lat1) * Math.PI / 180;  // Javascript functions in radians
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    console.log(d);
+  }
+
+  onPlaySound() {
+    this.playback.src = `../../assets/${this.model.sound}.mp3`
+    this.playback.load();
+    this.playback.play();
+    this.terminado = false;
+    this.calculateDistance();
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    console.log("HERE!!!!")
   }
 }

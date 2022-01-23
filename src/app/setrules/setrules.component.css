@@ -1,3 +1,25 @@
+input.ng-touched.ng-invalid{
+  border-left: 5px solid rgb(255, 113, 113);
+}
+
+input.ng-touched.ng-valid{
+  border-left: 5px solid rgb(19, 180, 5);
+}
+
+.sound-check{
+  position: relative;
+  flex: 1 1 auto;
+}
+
+.button {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  cursor: pointer;
+  transform: translateX(2px);
+  float: right;
+}
+
 .full {
     width: 80vw;
     height: 40vh;
