@@ -1,0 +1,22 @@
+.full {
+    width: 80vw;
+    height: 40vh;
+}
+
+.example-full-width{
+    margin-top: 1px;
+    height: 8vh;
+}
+
+.container-1{
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  :host {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-center;
+  }
