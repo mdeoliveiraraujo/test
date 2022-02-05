@@ -30,7 +30,7 @@ export class SetrulesComponent implements OnInit {
   ngOnInit(): void {
 
     let loader = new Loader({
-      apiKey: ''
+      apiKey: 'alou'
     });
 
     loader.load().then(() => {
@@ -47,7 +47,7 @@ export class SetrulesComponent implements OnInit {
         );
       }
 
-      const originalMapCenter = new google.maps.LatLng({ lat: -30.014866, lng: -51.143374 });
+      const originalMapCenter = new google.maps.LatLng({ lat: this.model.coords.lat, lng: this.model.coords.lng });
       // const originalMapCenter = new google.maps.LatLng(this.pos);
       const map = new google.maps.Map(document.getElementById("map"), {
         // center: originalMapCenter,
