@@ -1,35 +1,40 @@
 <div class="container-1">
-    <mat-card>
+    <mat-card style="background-color: #7b1fa2; width: 90vw;" *ngIf="!submitted">
         <div class="form-group">
-            <form #reqForm="ngForm">
-
-                <h2>Insert the desired radius.</h2>
-                <label for="radius">Radius</label>
-                <input type="number" class="form-control" id="radius" min="0.1" max="50" step="0.1" required
-                    [(ngModel)]="model.radius" name="radius">
-
-                <h2>Insert your destination coordinates.</h2>
+            <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+                <label for="radius">Insert the desired radius</label>
+                <mat-slider thumbLabel step="0.1" min="0.1" max="50"
+                    aria-label="units" formControlName="radius" [(ngModel)]="model.radius"></mat-slider>
+                <input type="number" name="radius" id="radius" formControlName="radius" [placeholder]="model.radius"
+                    step="0.1" min="0.1" max="50" [(ngModel)]="model.radius">
+                <hr>
+                <label>Choose your pin or insert coords</label>
                 <div class="full align-center" id="map"></div>
-                <label for="lat">Latitude</label>
-                <input type="number" class="form-control" id="lat" step="0.00001" required
-                    [(ngModel)]="model.coords.lat" name="lat" placeholder="Latitude">
-                <label for="lng">Longitude</label>
-                <input type="number" class="form-control" id="lat" step="0.00001" required
-                    [(ngModel)]="model.coords.lng" name="lng" placeholder="Longitude">
-
-                <div class="input-group">
-                    <h2>Select your alarm sound.</h2>
-                    <label for="sound"></label>
-                    <select class="form-control" name="sound" id="sound" required [(ngModel)]="model.sound"
-                        style="width: 88vw;">
-                        <option *ngFor="let sound of sounds" [value]="sound">{{sound}}</option>
+                <label for="latitude">Latitude</label>
+                <input type="number" name="latitude" id="latitude" formControlName="latitude"
+                    [placeholder]="model.coords.lat" step="0.00001">
+                <label for="latitude">Longitude</label>
+                <input type="number" name="longitude" id="longitude" formControlName="longitude"
+                    [placeholder]="model.coords.lng" step="0.00001">
+                <button type="button" (click)="updateCoords()"
+                    [disabled]="(myForm.controls['latitude'].pristine || myForm.controls['longitude'].pristine || myForm.controls['radius'].value==0)">Update</button>
+                <hr>
+                <label for="sound">Choose the alarm sound</label>
+                <div class="dropdown">
+                    <select name="sound" id="sound" class="form-control" formControlName="sound" [(ngModel)]="model.sound">
+                        <option *ngFor="let sound of sounds" [value]="sound">{{ sound }}</option>
                     </select>
                     <button type="button" class="btn" (click)="onPlaySound()"
                         [disabled]="model.sound=='None' || !(playback.ended || terminado)">Test</button>
                 </div>
-                <button type="submit" class="ui btn" style="display: block; margin: auto; margin-top: 20px;width: 80vw;"
-                    [disabled]="reqForm.invalid" (click)="onSubmit()">Activate!</button>
+                <button mat-fab type="submit" class="ui btn" style="display: block; margin: auto; margin-top: 20px;width: 80vw;"
+                    [disabled]="myForm.invalid || !pinCreated" (click)="onSubmit()">Activate!</button>
             </form>
         </div>
+    </mat-card>
+    <mat-card class="gosss" style="background-color: #7b1fa2; width: 90vw;" *ngIf="submitted" >
+        <mat-card-title>Distance remaining</mat-card-title>
+        <h1>{{distance | number: '1.1-2'}}</h1>
+        <h2></h2>
     </mat-card>
 </div>

@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import {MatSliderModule} from '@angular/material/slider'; 
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -37,7 +38,9 @@ import { MapBoxComponent } from './setrules/map-box/map-box.component';
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    MatSliderModule
   ],
   providers: [LocationService],
   bootstrap: [AppComponent, LocationService]

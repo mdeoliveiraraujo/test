@@ -6,6 +6,10 @@ input.ng-touched.ng-valid{
   border-left: 5px solid rgb(19, 180, 5);
 }
 
+input,label,mat-form-field{
+  display: block;
+}
+
 .sound-check{
   position: relative;
   flex: 1 1 auto;
@@ -41,4 +45,8 @@ input.ng-touched.ng-valid{
     display: flex;
     flex-direction: column;
     align-items: flex-center;
+  }
+
+  .gosss{
+    text-align: center;
   }
