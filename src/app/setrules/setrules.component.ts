@@ -42,7 +42,7 @@ export class SetrulesComponent implements OnInit, OnDestroy {
   constructor(private locationService: LocationService, private formBuilder: FormBuilder) { }
 
   async ngOnInit(): Promise<void> {
-
+    console.log('ble')
     this.myForm = new FormGroup({
       'radius': new FormControl(null, [Validators.required, Validators.min(0.1), Validators.max(50.0)]),
       'latitude': new FormControl(null, [Validators.required]),
